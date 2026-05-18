@@ -5,14 +5,14 @@ steps:
   args:
     - 'build'
     - '-t'
-    - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:test'
+    - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA'
     - '.'
 
 # Push
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:test'
+    - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA'
 
 # Deploy Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -21,7 +21,7 @@ steps:
     - run
     - deploy
     - credit-api
-    - --image=us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:test
+    - --image=us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA
     - --region=us-central1
     - --platform=managed
 
@@ -36,4 +36,4 @@ steps:
     - --vpc-egress=all-traffic
 
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:test'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA'
