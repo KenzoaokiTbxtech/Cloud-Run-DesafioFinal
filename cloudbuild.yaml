@@ -1,18 +1,18 @@
 steps:
 
-# Build da imagem
+# Build 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
     - '-t'
-    - 'us-central1-docker.pkg.dev/$tbx-kenzo-aoki-495513/techpay-repo/credit-api:$SHORT_SHA'
+    - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA'
     - '.'
 
-# Push para Artifact Registry
+# Push 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'us-central1-docker.pkg.dev/$tbx-kenzo-aoki-495513/techpay-repo/credit-api:$SHORT_SHA'
+    - 'us-central1-docker.pkg.dev$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA'
 
 # Deploy Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -21,26 +21,21 @@ steps:
     - run
     - deploy
     - credit-api
-    - --image=us-central1-docker.pkg.dev/$tbx-kenzo-aoki-495513/techpay-repo/credit-api:$SHORT_SHA
+    - --image=us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA
     - --region=us-central1
     - --platform=managed
     - --service-account=sa-credit-api@$tbx-kenzo-aoki-495513.iam.gserviceaccount.com
 
-    # Segurança
     - --no-allow-unauthenticated
 
-    # Secret Manager
     - --set-secrets=CREDIT_API_KEY=credit-api-key:latest
 
-    # Revisão
     - --set-env-vars=REVISION_TAG=$SHORT_SHA
 
-    # Zero cold start
     - --min-instances=1
 
-    # VPC Connector
     - --vpc-connector=techpay-connector
     - --vpc-egress=all-traffic
 
 images:
-  - 'us-central1-docker.pkg.dev/$tbx-kenzo-aoki-495513/techpay-repo/credit-api:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/techpay-repo/credit-api:$SHORT_SHA'
